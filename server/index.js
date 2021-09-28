@@ -4,14 +4,7 @@ const express = require("express");
 const morgan = require("morgan");
 
 // Import handler functions
-// const {
-//   getItems,
-//   getItemById,
-//   addToCart,
-//   getCompanyById,
-//   addToWishList,
-//   getCompanies,
-// } = require("./handlers");
+const { addPresets, getPresets } = require("./Handlers");
 
 const PORT = 4000;
 
@@ -36,8 +29,8 @@ express()
   // REST endpoints?
   .get("/bacon", (req, res) => res.status(200).json("🥓"))
 
-  // GET items
-  // .get("/api/item", getItems)
+  // GET presets
+  .get("/presets", getPresets)
   // .get("/api/item/:itemId", getItemById)
 
   // POST items into cart. Needs: id of item as JSON Body
@@ -49,6 +42,6 @@ express()
   // .get("/api/company/:companyId", getCompanyById)
 
   // POST items into wish list. Needs: id of item as JSON Body
-  // .post("/api/item/wishlist", addToWishList)
+  .post("/presets", addPresets)
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));

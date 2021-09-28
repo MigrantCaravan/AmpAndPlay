@@ -1,23 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
+// import EQ from "./components/EQ";
+import Header from "./components/Header";
+import Keyboard from "./components/Keyboard";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Header></Header>
+      <Keyboard></Keyboard>
+      {/* <EQ></EQ> */}
     </div>
   );
 }
