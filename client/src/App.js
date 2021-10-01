@@ -1,13 +1,11 @@
 // import EQ from "./components/EQ";
 import Header from "./components/Header";
-import Keyboard from "./components/Keyboard";
-
+import SynthAmp from "./components/SynthAmp";
 function App() {
   return (
     <div>
       <Header></Header>
-      <Keyboard></Keyboard>
-      {/* <EQ></EQ> */}
+      <SynthAmp></SynthAmp>
     </div>
   );
 }

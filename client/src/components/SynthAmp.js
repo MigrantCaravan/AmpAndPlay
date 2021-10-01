@@ -1,42 +1,41 @@
-import React, { useEffect } from "react";
-import { useRef } from "react";
-import { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import styled from "styled-components";
 import "./App.css";
-// import {
-//   playC4,
-//   playDb4,
-//   playD4,
-//   playEb4,
-//   playE4,
-//   playF4,
-//   playGb4,
-//   playG4,
-//   playAb4,
-//   playA4,
-//   playBb4,
-//   playB4,
-//   playC5,
-//   playNote,
-// } from "./Tone.fn.js";
-
-// window.addEventListener("keydown", playNote);
+import OnOffSwitch from "./OnOffSwitch";
 
 export default function Keyboard() {
   const pad = useRef(null);
+
   const [osc, setOsc] = useState(null);
-  const [filterLow, setFilterLow] = useState(null);
+  const filterLowRef = useRef(null);
+  const volRef = useRef(null);
+  const panRef = useRef(null);
+  const bitCrusherRef = useRef(null);
+
+  const [isDelayOn, setIsDelayOn] = useState(false);
+
   const [filterHigh, setFilterHigh] = useState(null);
-  const [vol, setVol] = useState(null);
+  const [vol, setVol] = useState(0);
+
+  const [delay, setDelay] = useState(null);
+  const delayButton = useRef(null);
   const [disto, setDisto] = useState(null);
   const distButton = useRef(null);
   const [reverb, setReverb] = useState(null);
   const reverbButton = useRef(null);
-  const [delay, setDelay] = useState(null);
-  const delayButton = useRef(null);
   const [phaser, setPhaser] = useState(null);
   const phaserButton = useRef(null);
+
+  const initialSettings = {
+    lowpass: 0,
+    volume: 0,
+    pan: 0,
+    delay: false,
+  };
+
+  const [settings, setSettings] = useState(initialSettings);
+
   //this is for handling the MIC
   //   const meter = new Tone.Meter();
   //   const mic = new Tone.UserMedia().connect(meter).toDestination();
@@ -64,7 +63,7 @@ export default function Keyboard() {
       setPhaser(
         new Tone.Phaser({
           frequency: 15,
-          octaves: 5,
+          octaves: 6,
           baseFrequency: 1000,
         }).toDestination()
       );
@@ -79,21 +78,23 @@ export default function Keyboard() {
   ///Handle Delay
 
   function handleDelay() {
-    if (delay === null) {
-      const _delay = new Tone.FeedbackDelay("8n", 0.5).toDestination();
-      setDelay(_delay);
+    if (!isDelayOn) {
+      setIsDelayOn(true);
+      setDelay(new Tone.FeedbackDelay("8n", 0.5).toDestination());
       delayButton.current.style.backgroundColor = "green";
+      setSettings({ ...settings, delay: isDelayOn });
     } else {
+      setIsDelayOn(false);
       delayButton.current.style.backgroundColor = "white";
-
       setDelay(null);
+      setSettings({ ...settings, delay: isDelayOn });
     }
   }
 
   /// handle Reverb
   function handleReverb() {
     if (reverb === null) {
-      setReverb(new Tone.JCReverb(0.5).toDestination());
+      setReverb(new Tone.Freeverb(0.3).toDestination());
       reverbButton.current.style.backgroundColor = "blue";
     } else {
       reverbButton.current.style.backgroundColor = "white";
@@ -105,7 +106,7 @@ export default function Keyboard() {
 
   function handleDistortion() {
     if (disto === null) {
-      setDisto(new Tone.Distortion(0.9).toDestination());
+      setDisto(new Tone.Distortion(1).toDestination());
       distButton.current.style.backgroundColor = "red";
     } else {
       distButton.current.style.backgroundColor = "white";
@@ -121,14 +122,13 @@ export default function Keyboard() {
     // pointer.current.style.visibility = "visible"
     // pointer.current.style.transform = `translate(${clientX - 205}px, ${clientY - 45}px)`
 
-    // pad.current.style.boxShadow = "inset 0 0 30px #000000";
-
-    osc.connect(filterLow);
-    osc.connect(filterHigh);
-    // osc.connect(vol);
+    osc.connect(filterLowRef.current);
+    osc.connect(volRef.current);
+    osc.connect(panRef.current);
     osc.start();
     osc.frequency.value = clientY;
-    // filterLow.frequency.value = clientX + 300;
+
+    // filterLowRef.current.frequency.value = clientX + 300;
   };
 
   const handleTouchMove = (e) => {
@@ -140,46 +140,124 @@ export default function Keyboard() {
     // pad.current.style.boxShadow = "inset 0 0 30px #000000"
     // pointer.current.style.transform = `translate(${clientX - 205}px, ${clientY - 45}px)`
 
-    // filterLow.frequency.value = clientX + 300;
+    // filterLowRef.current.frequency.value = clientX + 300;
     osc.frequency.value = clientY;
   };
-
-  function handleChange(e) {
-    // console.log(e.target.value);
-    const filter = e.target.value;
-    filterLow.frequency.value = filter;
+  ///FUNCTION HANDLE LOWPASS -----
+  function handleLowpass(e) {
+    console.log("Lowpass value", e.target.value);
+    filterLowRef.current.frequency.value = e.target.value;
+    setSettings({ ...settings, lowpass: Number(e.target.value) });
   }
-
-  function handleHighpass(e) {
-    // console.log(e.target.value);
-    const filterH = e.target.value;
-    filterHigh.frequency.value = filterH;
-  }
-
+  ///FUNCTION HANDLE VOLUME ----
   function handleVol(e) {
-    const value = e.target.value;
-    console.log(value);
-    vol.volume.value = value;
+    console.log("Volume value", e.target.value);
+    volRef.current.volume.value = e.target.value;
+    osc.volume.value = e.target.value;
+    setSettings({ ...settings, volume: Number(e.target.value) });
+  }
+
+  ///FUNCTION HANDLE PAN ----
+  function handlePan(e) {
+    console.log("Pan value", e.target.value);
+    panRef.current.pan.value = e.target.value;
+    setSettings({ ...settings, pan: Number(e.target.value) });
+  }
+  ///FUNCTION HANDLE BIT CRUSHER
+  function handleBitCrusher(e) {
+    console.log("bitcrusher", e.target.value);
+    bitCrusherRef.current.bits.value = e.target.value;
+    // new Tone.BitCrusher(4).toDestination()
   }
 
   const handleTouchEnd = () => {
     // pad.current.style.boxShadow = "inset 0 0 20px #000000";
-    // pointer.current.style.visibility = "hidden"
     osc.stop();
   };
+  //// HANDLE SUBMIT -------- POST
+  function handleSubmit() {
+    fetch("/presets", {
+      method: "POST",
+      body: JSON.stringify(settings),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.status === 201) {
+          console.log(json.data);
+
+          // updateUserReservation(json.data);
+          // window.localStorage.setItem("PresetData", JSON.stringify(json.data));
+          // history.push("/confirmed");
+        }
+      })
+      .catch((err) => {
+        console.log("Error:", err);
+      });
+  }
+  //// HANDLE LOAD PRESET ------- GET
+
+  function handleLoadPreset() {
+    fetch("/presets")
+      .then((res) => res.json())
+      .then((data) => {
+        const obj1 = data.data;
+        console.log("data.data", obj1);
+        //this line is looking for the fist object in MongoDB collection
+        // const obj2 = obj1[Object.keys(obj1)[0]];
+        // this line is looking for the last object of the collection. if I implement a PUT method instead of a POST i will rewrite the fetch
+        const obj2 = obj1[Object.keys(obj1)[Object.keys(obj1).length - 1]];
+        console.log(obj2);
+        const val1 = obj2[Object.keys(obj2)[1]];
+        console.log(val1);
+        const val2 = obj2[Object.keys(obj2)[2]];
+        console.log(val2);
+        const val3 = obj2[Object.keys(obj2)[3]];
+        console.log(val3);
+        const val4 = obj2[Object.keys(obj2)[4]];
+        console.log(val4);
+        ///updating settings from the MongoDb object for sliders
+        setSettings({
+          ...settings,
+          lowpass: val1,
+          volume: val2,
+          pan: val3,
+          delay: val4,
+        });
+        filterLowRef.current.frequency.value = val1;
+        volRef.current.volume.value = val2;
+        osc.volume.value = val2;
+        panRef.current.pan.value = val3;
+        ///updating settings from the MongoDb object for buttons
+        setIsDelayOn(val4);
+        handleDelay();
+        console.log(delay);
+      })
+
+      .catch((err) => {
+        console.log("Error", err);
+      });
+  }
+
   ///// USEEFFECT
   useEffect(() => {
     setOsc(new Tone.Oscillator().toDestination());
-    setFilterLow(new Tone.Filter(50, "lowpass").toDestination());
-    setFilterHigh(new Tone.Filter(1500, "highpass").toDestination());
-    setVol(new Tone.Volume(-12).toDestination());
+    filterLowRef.current = new Tone.Filter(50, "lowpass").toDestination();
+    volRef.current = new Tone.Volume(-20).toDestination();
+    panRef.current = new Tone.Panner(1).toDestination();
+    bitCrusherRef.current = new Tone.BitCrusher(16).toDestination();
+    // setVol(new Tone.Volume(-12).toDestination());
   }, []);
+
   /// useEffect Volume
-  useEffect(() => {
-    if (osc) {
-      osc.connect(vol);
-    }
-  }, [vol]);
+  // useEffect(() => {
+  //   if (osc) {
+  //     // osc.connect(vol);
+  //   }
+  // }, [vol]);
 
   ///UseEffect ---- PHASER
   useEffect(() => {
@@ -233,6 +311,7 @@ export default function Keyboard() {
     <div>
       <h1>Stylophone</h1>
       <ButtonDiv>
+        <OnOffSwitch></OnOffSwitch>
         <button
           id="div-phase"
           ref={phaserButton}
@@ -271,30 +350,45 @@ export default function Keyboard() {
         <label htmlFor="filter">Filter Lowpass</label>
         <input
           type="range"
+          name="lowpass"
+          value={settings.lowpass}
+          onChange={handleLowpass}
           id="low"
           min="1"
           max="300"
-          defaultValue="50"
-          onChange={handleChange}
-        />
-        <label htmlFor="filter">Filter Highpass</label>
-        <input
-          type="range"
-          id="high"
-          min="1"
-          max="2000"
-          defaultValue="1500"
-          onChange={handleHighpass}
         />
         <label htmlFor="">Volume</label>
         <input
           onChange={handleVol}
           type="range"
+          value={settings.volume}
           id="volume"
-          min="-100"
-          max="30"
-          defaultValue="-15"
+          min="-45"
+          max="20"
+          // defaultValue="-20"
           step="1"
+        />
+        <label htmlFor="filter">Pan</label>
+        <input
+          type="range"
+          id="high"
+          min="-1"
+          max="1"
+          // defaultValue="0"
+          value={settings.pan}
+          step="0.01"
+          onChange={handlePan}
+        />
+        <label htmlFor="filter">Bit Crusher</label>
+        <input
+          type="range"
+          id="high"
+          min="1"
+          max="16"
+          // defaultValue="0"
+          // value={settings.pan}
+          // step="0.01"
+          onChange={handleBitCrusher}
         />
       </Params>
       <Pad
@@ -305,7 +399,10 @@ export default function Keyboard() {
         onTouchEnd={handleTouchEnd}
         className="pad"
       ></Pad>
-      <div className="pianoPage"></div>
+      <div className="preset-button-wrapper">
+        <button onClick={handleSubmit}>Submit Preset</button>
+        <button onClick={handleLoadPreset}>Load Preset</button>
+      </div>
     </div>
   );
 }
