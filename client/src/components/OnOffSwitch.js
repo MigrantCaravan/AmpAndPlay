@@ -2,7 +2,7 @@ import React from "react";
 import "./OnOffSwitch.css";
 import * as Tone from "tone";
 
-export default function OnOffSwitch() {
+export default function OnOffSwitch({ handleMic }) {
   return (
     <div>
       <div className="mid">
@@ -10,8 +10,8 @@ export default function OnOffSwitch() {
           <input
             onChange={() => {
               console.log("start");
-              Tone.start();
             }}
+            onClick={handleMic}
             type="checkbox"
           />
           <span className="switch-left">ON</span>

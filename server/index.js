@@ -4,7 +4,12 @@ const express = require("express");
 const morgan = require("morgan");
 
 // Import handler functions
-const { addPresets, getPresets } = require("./Handlers");
+const {
+  addPresets,
+  getPresets,
+  getPreset,
+  updatePreset,
+} = require("./Handlers");
 
 const PORT = 4000;
 
@@ -35,7 +40,9 @@ express()
 
   // POST items into cart. Needs: id of item as JSON Body
   // Now works with localstorage
-  // .post("/api/item", addToCart)
+  .get("/preset/:id", getPreset)
+
+  .put("/preset/:id", updatePreset)
 
   // GET company by id
   // .get("/api/company", getCompanies)
