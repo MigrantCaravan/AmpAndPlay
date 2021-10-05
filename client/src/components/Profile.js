@@ -7,18 +7,31 @@ export default function Profile() {
   const { user, isAuthenticated } = useAuth0();
   return (
     isAuthenticated && (
-      <div>
+      <Wrapper>
         <Img src={user.picture} alt="profile-pic"></Img>
-        <h2>{user.name}</h2>
-        <p>{user.email}</p>
+        <UserInfo>
+          <h2>{user.name}</h2>
+          <p>{user.email}</p>
+        </UserInfo>
         {/* <JSONPretty data={user}></JSONPretty> */}
         {/* {JSON.stringify(user, null, 2)} */}
-      </div>
+      </Wrapper>
     )
   );
 }
 
+const UserInfo = styled.div`
+  /* display: flex; */
+  padding-left: 35px;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  padding-top: 10px;
+`;
+
 const Img = styled.img`
   border-radius: 50%;
   width: 80px;
+  height: 80px;
 `;

@@ -13,18 +13,24 @@ export default function Header() {
   }
   return (
     <Wrapper>
-      <LoginButton></LoginButton>
-      <Logoutbutton></Logoutbutton>
       <Profile></Profile>
+      <ButtonWraper>
+        <LoginButton></LoginButton>
+        <Logoutbutton></Logoutbutton>
+      </ButtonWraper>
     </Wrapper>
   );
 }
 
+const ButtonWraper = styled.div`
+  /* display: flex; */
+`;
+
 const Wrapper = styled.div`
-  height: 200px;
-  background-color: aquamarine;
   display: flex;
-  justify-content: center;
-  align-items: left;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-around;
+  height: 150px;
+  width: 100vw;
+  background-color: #ffc069;
 `;

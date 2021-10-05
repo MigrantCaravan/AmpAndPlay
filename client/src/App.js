@@ -1,9 +1,10 @@
-// import EQ from "./components/EQ";
 import Header from "./components/Header";
 import SynthAmp from "./components/SynthAmp";
+import "./components/App.css";
+
 function App() {
   return (
-    <div>
+    <div className="main-view">
       <Header></Header>
       <SynthAmp></SynthAmp>
     </div>

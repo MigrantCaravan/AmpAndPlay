@@ -38,6 +38,7 @@ html {
   height: 4em;
   overflow: hidden;
   border-bottom: 0.5em solid #eee;
+  border-radius: 8px;
 }
 
 .rocker-small {
@@ -54,6 +55,7 @@ html {
   bottom: 0;
   background-color: #999;
   border: 0.5em solid #eee;
+  border-radius: 8px;
   border-bottom: 0;
 }
 
@@ -87,7 +89,7 @@ html {
 .switch-right {
   right: 0.5em;
   bottom: 0;
-  background-color: #bd5757;
+  background-color: #ac0d0d;
   color: #fff;
 }
 
@@ -113,7 +115,7 @@ html {
 }
 
 input:checked + .switch-left {
-  background-color: #0084d0;
+  background-color: blue;
   color: #fff;
   bottom: 0px;
   left: 0.5em;

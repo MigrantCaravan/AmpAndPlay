@@ -6,7 +6,7 @@ function PresetButton() {
 }
 
 const Wrapper = styled.div`
-  display: flex;
+  /* display: flex; */
 `;
 
 export default PresetButton;

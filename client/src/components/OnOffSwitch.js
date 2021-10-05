@@ -1,10 +1,10 @@
 import React from "react";
+import styled from "styled-components";
 import "./OnOffSwitch.css";
-import * as Tone from "tone";
 
 export default function OnOffSwitch({ handleMic }) {
   return (
-    <div>
+    <Wrapper>
       <div className="mid">
         <label className="rocker rocker-small">
           <input
@@ -18,6 +18,10 @@ export default function OnOffSwitch({ handleMic }) {
           <span className="switch-right">OFF</span>
         </label>
       </div>
-    </div>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  padding-right: 30px;
+`;

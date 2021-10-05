@@ -94,11 +94,6 @@ const updatePreset = async (req, res) => {
 
     const result = await db.collection("presets").updateOne({ id }, newValues);
 
-    // assert.equal(1, result.matchedCount);
-    // assert.equal(1, result.modifiedCount);
-
-    /// success case
-
     res.status(200).json({
       status: 200,
       data: req.body,
@@ -110,9 +105,33 @@ const updatePreset = async (req, res) => {
   }
 };
 
+const deletePreset = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const client = await new MongoClient(MONGO_URI, options);
+    // connect to the client
+    await client.connect();
+    // connect to the database (db name is provided as an argument to the function)
+    const db = client.db("ampandplay");
+    //   console.log("connected!");
+    const result = await db.collection("presets").deleteOne({ id });
+
+    client.close();
+
+    if (result.deletedCount === 1) {
+      res.status(201).json({ status: 201, data: id, message: "item deleted" });
+    } else {
+      res.status(400).json({ status: 404, id, message: "not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ status: 500, data: id, message: err.message });
+  }
+};
+
 module.exports = {
   addPresets,
   getPresets,
   getPreset,
   updatePreset,
+  deletePreset,
 };

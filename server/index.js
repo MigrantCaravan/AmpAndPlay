@@ -9,6 +9,7 @@ const {
   getPresets,
   getPreset,
   updatePreset,
+  deletePreset,
 } = require("./Handlers");
 
 const PORT = 4000;
@@ -50,5 +51,7 @@ express()
 
   // POST items into wish list. Needs: id of item as JSON Body
   .post("/presets", addPresets)
+
+  .delete("/preset/:id", deletePreset)
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
