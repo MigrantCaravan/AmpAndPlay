@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import styled from "styled-components";
+import { AiFillWarning } from "react-icons/ai";
 import "./App.css";
 import OnOffSwitch from "./OnOffSwitch";
 import Wood from "../components/light_wood_panel.jpeg";
@@ -13,7 +14,6 @@ export default function Keyboard() {
   const [osc, setOsc] = useState(null);
   const [filterLow, setFilterLow] = useState(null);
   const volRef = useRef(null);
-  // const panRef = useRef(null);
   const [pan, setPan] = useState(null);
 
   const [isPhaserOn, setIsPhaserOn] = useState(false);
@@ -68,12 +68,7 @@ export default function Keyboard() {
           // promise resolves when input is available
           console.log("mic open");
           // print the incoming mic levels in decibels
-          setInterval(
-            () =>
-              // console.log(meter.getValue())
-              setDecibel(meter.getValue()),
-            1000
-          );
+          setInterval(() => setDecibel(meter.getValue()), 1000);
           setInterval(() => console.log(meter.getValue()), 1000);
         })
         .then(() => {
@@ -697,9 +692,24 @@ export default function Keyboard() {
           onMouseUp={handleMouseEnd}
           className="pad"
         ></Pad>
-        <PresetMessages>MESSAGE {presetMessage}</PresetMessages>
+        <Warning>
+          <AiFillWarning />
+          <AiFillWarning />
+          <AiFillWarning />
+          <AiFillWarning />
+          <AiFillWarning />
+          <AiFillWarning />
+          <AiFillWarning />
+          <h3>Warning</h3>
+          <p>*Always use headphones</p>
+          <p>
+            *Mic mode will requiere access to your microphone and only one
+            effect can be used at the time
+          </p>
+        </Warning>
+        <PresetMessages>MESSAGE: {presetMessage}</PresetMessages>
         <MicMode>
-          MIC MODE
+          MIC MODE:
           <OnOffSwitch handleMic={handleMic}></OnOffSwitch>
         </MicMode>
       </LeftPanel>
@@ -819,15 +829,47 @@ export default function Keyboard() {
 }
 
 const PresetNumber = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: whitesmoke;
   border-radius: 50%;
   width: 18px;
 `;
 
-const PresetMessages = styled.div`
-  background-color: #ffc069;
-  font-family: "digital-clock-font";
+const Warning = styled.div`
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-align: center;
+  background-color: #a45d5d;
+  background-image: url("https://www.transparenttextures.com/patterns/hexellence.png");
+  /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
   font-size: 15px;
+  position: absolute;
+  top: 2.5%;
+  left: 65%;
+  width: 4%;
+  height: 4%;
+  border: solid 5px;
+  border-radius: 8px;
+  border-color: #f5eeea;
+  /* text-indent: -9999px; */
+  color: transparent;
+
+  &:hover {
+    /* transition: 0.1s; */
+    transition: 0.3s ease-in-out;
+    color: black;
+    text-indent: 0%;
+    height: 32%;
+    width: 30%;
+  }
+`;
+
+const PresetMessages = styled.div`
+  background-color: black;
+  color: white;
+  font-family: "digital-clock-font";
+  font-size: 23px;
   position: absolute;
   top: 62%;
   left: 65%;
@@ -841,6 +883,9 @@ const PresetMessages = styled.div`
 `;
 
 const Label = styled.label`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 12px;
   background-color: #efefef;
@@ -922,7 +967,7 @@ const Decibels = styled.div`
 const MicMode = styled.div`
   display: flex;
   /* align-items: center; */
-  background-color: #a45d5d;
+  background-color: #ffc069;
   font-family: "digital-clock-font";
   font-size: 15px;
   position: absolute;

@@ -35,23 +35,21 @@ express()
   // REST endpoints?
   .get("/bacon", (req, res) => res.status(200).json("🥓"))
 
-  // GET presets
-  .get("/presets", getPresets)
-  // .get("/api/item/:itemId", getItemById)
+  ////----------END POINTS----------////
 
-  // POST items into cart. Needs: id of item as JSON Body
-  // Now works with localstorage
+  // GET presets all PRESETS
+  .get("/presets", getPresets)
+
+  // GET single PRESET
   .get("/preset/:id", getPreset)
 
+  //PUT single PRESET
   .put("/preset/:id", updatePreset)
 
-  // GET company by id
-  // .get("/api/company", getCompanies)
-  // .get("/api/company/:companyId", getCompanyById)
-
-  // POST items into wish list. Needs: id of item as JSON Body
+  // POST single PRESET
   .post("/presets", addPresets)
 
+  //DELETE single PRESET
   .delete("/preset/:id", deletePreset)
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));

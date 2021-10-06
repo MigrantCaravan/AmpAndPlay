@@ -1,21 +1,11 @@
 .main-view {
-  /* --------------------------------- */
-  /*  Positioning
-      Display & Box Model
-      Color
-      Text
-      Other
-  */
-  /* --------------------------------- */
-
   top: 0em;
   left: 0em;
-
   width: 100%;
   height: 100vh;
-
   background-color: #4a403a;
-
+  background-image: url("https://www.transparenttextures.com/patterns/clean-textile.png");
+  /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
   font-family: Futura;
 }
 
