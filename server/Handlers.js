@@ -88,7 +88,7 @@ const updatePreset = async (req, res) => {
       message: "preset modified",
     });
   } catch (err) {
-    console.log("Error:", err.stack);
+    // console.log("Error:", err.stack);
     res.status(500).json({ status: 500, data: req.body, message: err.message });
   }
 };

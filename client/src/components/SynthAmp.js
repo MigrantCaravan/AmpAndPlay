@@ -91,14 +91,14 @@ export default function Keyboard() {
         })
         .catch((e) => {
           // promise is rejected when the user doesn't have or allow mic access
-          console.log(
-            "mic is not open, please allow the browser to reach the mic"
-          );
+          // console.log(
+          //   "mic is not open, please allow the browser to reach the mic"
+          // );
           setPresetMessage("Allow the browser to reach the mic");
         });
     } else if (isMicOn) {
       setIsMicOn(!isMicOn);
-      console.log("Mic switch is OFF");
+      // console.log("Mic switch is OFF");
       mic.disconnect().toDestination();
       mic.close().toDestination();
       window.location.reload(false);
@@ -314,7 +314,7 @@ export default function Keyboard() {
         }
       })
       .catch((err) => {
-        console.log("Error:", err);
+        // console.log("Error:", err);
       });
   }
 
@@ -337,7 +337,7 @@ export default function Keyboard() {
         }
       })
       .catch((err) => {
-        console.log("Error:", err);
+        // console.log("Error:", err);
       });
   }
 
@@ -441,7 +441,7 @@ export default function Keyboard() {
       })
 
       .catch((err) => {
-        console.log("Error", err);
+        // console.log("Error", err);
         setPresetMessage("Preset not found");
       });
   }
@@ -460,7 +460,7 @@ export default function Keyboard() {
       .then((res) => res.json())
       .then((json) => {
         if (json.status === 200) {
-          console.log(json.data);
+          // console.log(json.data);
           setPresetMessage(`Preset ${selectPreset} deleted from Database`);
         } else if (json.status === 400) {
           setPresetMessage("Preset not found");
@@ -468,7 +468,7 @@ export default function Keyboard() {
       })
       .catch((err) => {
         setPresetMessage("Preset not found");
-        console.log("Error:", err);
+        // console.log("Error:", err);
       });
   }
 
