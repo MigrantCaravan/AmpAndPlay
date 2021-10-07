@@ -10,19 +10,19 @@ import { useAuth0 } from "@auth0/auth0-react";
 export default function Keyboard() {
   const { user, isAuthenticated } = useAuth0();
   const pad = useRef(null);
-
+  ///States for the sliders
   const [osc, setOsc] = useState(null);
   const [filterLow, setFilterLow] = useState(null);
   const volRef = useRef(null);
   const [pan, setPan] = useState(null);
-
+  ///States for the isOn effects
   const [isPhaserOn, setIsPhaserOn] = useState(false);
   const [isDelayOn, setIsDelayOn] = useState(false);
   const [isReverbOn, setIsReverbOn] = useState(false);
   const [isDistortionOn, setIsDistortionOn] = useState(false);
   const [isChebyshevOn, setIsChebyshevOn] = useState(false);
   const [isPingPongOn, setIsPingPongOn] = useState(false);
-
+  ///States for the effects from Tone.js and Ref for buttons
   const [delay, setDelay] = useState(null);
   const delayButton = useRef(null);
   const [reverb, setReverb] = useState(null);
@@ -35,12 +35,12 @@ export default function Keyboard() {
   const ChevyshevButton = useRef(null);
   const [pingPong, setPingPong] = useState(null);
   const pingPongButton = useRef(null);
-
+  ///States for the preset selection and message
   const [selectPreset, setSelectPreset] = useState("1");
   const [presetMessage, setPresetMessage] = useState("");
 
   const [decibel, setDecibel] = useState(0);
-
+  ///Object with inital values for eache effect and slider
   const initialSettings = {
     lowpass: 50,
     volume: 0,
@@ -54,8 +54,9 @@ export default function Keyboard() {
   };
 
   const [settings, setSettings] = useState(initialSettings);
-  const [isMicOn, setIsMicOn] = useState(false);
 
+  //// This function and variables are responsible for Mic Mode
+  const [isMicOn, setIsMicOn] = useState(false);
   const meter = new Tone.Meter();
   const mic = new Tone.UserMedia().connect(meter).toDestination();
   function handleMic() {
@@ -66,10 +67,10 @@ export default function Keyboard() {
         .open()
         .then(() => {
           // promise resolves when input is available
-          console.log("mic open");
+          setPresetMessage("Mic Mode ON");
           // print the incoming mic levels in decibels
           setInterval(() => setDecibel(meter.getValue()), 1000);
-          setInterval(() => console.log(meter.getValue()), 1000);
+          // setInterval(() => console.log(meter.getValue()), 1000);
         })
         .then(() => {
           if (mic) {
@@ -93,6 +94,7 @@ export default function Keyboard() {
           console.log(
             "mic is not open, please allow the browser to reach the mic"
           );
+          setPresetMessage("Allow the browser to reach the mic");
         });
     } else if (isMicOn) {
       setIsMicOn(!isMicOn);
@@ -102,9 +104,9 @@ export default function Keyboard() {
       window.location.reload(false);
     }
   }
-  //this is for handling the MIC
 
-  /// HANDLE ---- DELAY
+  /// HANDLE CLICK ---- DELAY
+
   function handleDelay() {
     if (!isDelayOn) {
       setIsDelayOn(!isDelayOn);
@@ -208,7 +210,6 @@ export default function Keyboard() {
   const handleTouchStart = (e) => {
     const clientY = e.touches[0].clientY;
     const clientX = e.touches[0].clientX;
-    console.log(clientY);
 
     osc.connect(filterLow);
     osc.connect(volRef.current);
@@ -222,7 +223,6 @@ export default function Keyboard() {
   function handleMouseStart(e) {
     const clientY = e.clientY;
     const clientX = e.clientX;
-    console.log(clientY);
 
     osc.start();
     osc.connect(filterLow);
@@ -260,6 +260,8 @@ export default function Keyboard() {
     filterLow.frequency.value = clientX + 300;
   }
 
+  /// FUNCTIONS TO HANDLE SLIDERS
+
   ///FUNCTION HANDLE LOWPASS ----
 
   function handleLowpass(e) {
@@ -272,7 +274,7 @@ export default function Keyboard() {
     volRef.current.volume.value = e.target.value;
     osc.volume.value = e.target.value;
     setSettings({ ...settings, volume: Number(e.target.value) });
-    console.log(user.sub);
+    // console.log(user.sub);
   }
 
   ///FUNCTION HANDLE PAN ----
@@ -287,6 +289,8 @@ export default function Keyboard() {
   function handleSelectPreset(e) {
     setSelectPreset(e.target.value);
   }
+
+  /// FUNTIONS THAT HANDLE THE FETCHES POST-PUT-DELETE-GET
 
   //// HANDLE SUBMIT -------- POST
 
@@ -305,7 +309,7 @@ export default function Keyboard() {
       .then((res) => res.json())
       .then((json) => {
         if (json.status === 201) {
-          console.log(json.data);
+          // console.log(json.data);
           setPresetMessage(`Preset ${selectPreset} saved in Database`);
         }
       })
@@ -328,27 +332,22 @@ export default function Keyboard() {
       .then((res) => res.json())
       .then((json) => {
         if (json.status === 200) {
-          console.log(json.data);
+          // console.log(json.data);
           setPresetMessage(`Preset ${selectPreset} updated in Database`);
         }
       })
       .catch((err) => {
         console.log("Error:", err);
       });
-    /////////////-//////////////////////-////////////////-///////////////
   }
+
   //// HANDLE LOAD PRESET ------- GET by ID (presets go from 1 to 5)
 
   function handleLoadPreset() {
     fetch(`/preset/${selectPreset}${user.sub}`)
       .then((res) => res.json())
       .then((data) => {
-        const obj1 = data.data;
-        console.log("data.data", obj1);
         setPresetMessage(`Preset ${selectPreset} is loaded`);
-        // const val9 = obj1[Object.keys(obj1)[9]];
-        // console.log("VAL9", val9);
-        // console.log("VAl9 but dot", data.data.pingpong);
 
         ///updating settings from Mongo obj
         setSettings({
@@ -371,9 +370,6 @@ export default function Keyboard() {
         pan.pan.value = data.data.pan;
 
         ////////updating settings from the MongoDb object for button
-        console.log("pimgpong VALUE", settings.pingpong);
-        console.log("delay VALUE", settings.delay);
-        console.log(settings);
 
         setIsDelayOn(data.data.delay);
 
@@ -391,10 +387,10 @@ export default function Keyboard() {
 
         if (data.data.delay) {
           setDelay(new Tone.FeedbackDelay("8n", 0.5).toDestination());
-          delayButton.current.style.backgroundColor = "green";
+          delayButton.current.style.backgroundColor = "#D9DD6B";
         } else {
           setDelay(null);
-          delayButton.current.style.backgroundColor = "white";
+          delayButton.current.style.backgroundColor = "#EFEFEF";
         }
 
         if (data.data.phaser) {
@@ -405,171 +401,51 @@ export default function Keyboard() {
               baseFrequency: 1000,
             }).toDestination()
           );
-          phaserButton.current.style.backgroundColor = "purple";
+          phaserButton.current.style.backgroundColor = "#B24080";
         } else {
           setPhaser(null);
-          phaserButton.current.style.backgroundColor = "white";
+          phaserButton.current.style.backgroundColor = "#EFEFEF";
         }
 
         if (data.data.reverb) {
           setReverb(new Tone.Chorus(4, 2.5, 10).toDestination().start());
-          reverbButton.current.style.backgroundColor = "blue";
+          reverbButton.current.style.backgroundColor = "#1597BB";
         } else {
           setReverb(null);
-          reverbButton.current.style.backgroundColor = "white";
+          reverbButton.current.style.backgroundColor = "#EFEFEF";
         }
 
         if (data.data.distortion) {
           setDisto(new Tone.Distortion(1).toDestination());
-          distButton.current.style.backgroundColor = "red";
+          distButton.current.style.backgroundColor = "#AC0D0D";
         } else {
           setDisto(null);
-          distButton.current.style.backgroundColor = "white";
+          distButton.current.style.backgroundColor = "#EFEFEF";
         }
 
         if (data.data.chebyshev) {
           setChebyshev(new Tone.Chebyshev(50).toDestination());
-          ChevyshevButton.current.style.backgroundColor = "orange";
+          ChevyshevButton.current.style.backgroundColor = "#F48B29";
         } else {
           setChebyshev(null);
-          ChevyshevButton.current.style.backgroundColor = "white";
+          ChevyshevButton.current.style.backgroundColor = "#EFEFEF";
         }
 
         if (data.data.pingpong) {
           setPingPong(new Tone.PingPongDelay("4n", 0.2).toDestination());
-          pingPongButton.current.style.backgroundColor = "gray";
+          pingPongButton.current.style.backgroundColor = "#D5DBB3";
         } else {
           setPingPong(null);
-          pingPongButton.current.style.backgroundColor = "white";
+          pingPongButton.current.style.backgroundColor = "#EFEFEF";
         }
       })
 
       .catch((err) => {
         console.log("Error", err);
+        setPresetMessage("Preset not found");
       });
-    /////////////-//////////////////////-////////////////-///////////////
-    // fetch("/presets")
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     const obj1 = data.data;
-    //     console.log("data.data", obj1);
-    //     //this line is looking for the fist object in MongoDB collection
-    //     // const obj2 = obj1[Object.keys(obj1)[0]];
-    //     // this line is looking for the last object of the collection. if I implement a PUT method instead of a POST i will rewrite the fetch
-    //     const obj2 = obj1[Object.keys(obj1)[Object.keys(obj1).length - 1]];
-    //     console.log(obj2);
-    //     const val1 = obj2[Object.keys(obj2)[1]];
-    //     console.log(val1);
-    //     const val2 = obj2[Object.keys(obj2)[2]];
-    //     console.log(val2);
-    //     const val3 = obj2[Object.keys(obj2)[3]];
-    //     console.log(val3);
-    //     const val4 = obj2[Object.keys(obj2)[4]];
-    //     console.log(val4);
-    //     const val5 = obj2[Object.keys(obj2)[5]];
-    //     console.log(val5);
-    //     const val6 = obj2[Object.keys(obj2)[6]];
-    //     console.log(val6);
-    //     const val7 = obj2[Object.keys(obj2)[7]];
-    //     console.log(val7);
-    //     const val8 = obj2[Object.keys(obj2)[8]];
-    //     console.log(val8);
-    //     const val9 = obj2[Object.keys(obj2)[9]];
-    //     console.log(val9);
-    //     ///updating settings from Mongo obj
-    //     setSettings({
-    //       ...settings,
-    //       lowpass: val1,
-    //       volume: val2,
-    //       pan: val3,
-    //       delay: val4,
-    //       phaser: val5,
-    //       reverb: val6,
-    //       distortion: val7,
-    //       chebyshev: val8,
-    //       pingpong: val9,
-    //     });
-    //     ///updating settings from the MongoDb object for sliders
-    //     filterLowRef.current.frequency.value = val1;
-    //     volRef.current.volume.value = val2;
-    //     osc.volume.value = val2;
-    //     pan.pan.value = val3;
-
-    //     ///updating settings from the MongoDb object for buttons
-    //     setIsDelayOn(val4);
-    //     // handleDelay();
-    //     setIsPhaserOn(val5);
-    //     // handlePhaser();
-    //     setIsReverbOn(val6);
-    //     // handleReverb();
-    //     setIsDistortionOn(val7);
-    //     // handleDistortion();
-    //     setIsChebyshevOn(val8);
-    //     // handleChebyshev();
-    //     setIsPingPongOn(val9);
-    //     // handlePingPong();
-
-    //     ///////RELOADING THE STATE THAT COMES FRON THE BACK END
-
-    //     if (val4) {
-    //       setDelay(new Tone.FeedbackDelay("8n", 0.5).toDestination());
-    //       delayButton.current.style.backgroundColor = "green";
-    //     } else {
-    //       setDelay(null);
-    //       delayButton.current.style.backgroundColor = "white";
-    //     }
-
-    //     if (val5) {
-    //       setPhaser(
-    //         new Tone.Phaser({
-    //           frequency: 15,
-    //           octaves: 6,
-    //           baseFrequency: 1000,
-    //         }).toDestination()
-    //       );
-    //       phaserButton.current.style.backgroundColor = "purple";
-    //     } else {
-    //       setPhaser(null);
-    //       phaserButton.current.style.backgroundColor = "white";
-    //     }
-
-    //     if (val6) {
-    //       setReverb(new Tone.Chorus(4, 2.5, 10).toDestination().start());
-    //       reverbButton.current.style.backgroundColor = "blue";
-    //     } else {
-    //       setReverb(null);
-    //       reverbButton.current.style.backgroundColor = "white";
-    //     }
-
-    //     if (val7) {
-    //       setDisto(new Tone.Distortion(1).toDestination());
-    //       distButton.current.style.backgroundColor = "red";
-    //     } else {
-    //       setDisto(null);
-    //       distButton.current.style.backgroundColor = "white";
-    //     }
-
-    //     if (val8) {
-    //       setChebyshev(new Tone.Chebyshev(50).toDestination());
-    //       ChevyshevButton.current.style.backgroundColor = "orange";
-    //     } else {
-    //       setChebyshev(null);
-    //       ChevyshevButton.current.style.backgroundColor = "white";
-    //     }
-
-    //     if (val9) {
-    //       setPingPong(new Tone.PingPongDelay("4n", 0.2).toDestination());
-    //       pingPongButton.current.style.backgroundColor = "gray";
-    //     } else {
-    //       setPingPong(null);
-    //       pingPongButton.current.style.backgroundColor = "white";
-    //     }
-    //   })
-
-    //   .catch((err) => {
-    //     console.log("Error", err);
-    //   });
   }
+
   //// HANDLE DELETE PRESET ------- GET by ID (presets go from 1 to 5)
 
   function handleDeletePreset() {
@@ -583,12 +459,15 @@ export default function Keyboard() {
     })
       .then((res) => res.json())
       .then((json) => {
-        if (json.status === 201) {
+        if (json.status === 200) {
           console.log(json.data);
           setPresetMessage(`Preset ${selectPreset} deleted from Database`);
+        } else if (json.status === 400) {
+          setPresetMessage("Preset not found");
         }
       })
       .catch((err) => {
+        setPresetMessage("Preset not found");
         console.log("Error:", err);
       });
   }
@@ -680,7 +559,7 @@ export default function Keyboard() {
         }}
       ></WoodBackground>
       <LeftPanel>
-        <Decibels>{Math.floor(decibel)}</Decibels>
+        <Decibels>DB: {Math.floor(decibel)}</Decibels>
         <Pad
           id="pad"
           ref={pad}
@@ -764,7 +643,8 @@ export default function Keyboard() {
             Pingpong
           </Button>
           <Button onClick={() => window.location.reload(false)}>
-            Reload synth!
+            Reload Synth
+            <AiFillWarning />
           </Button>
         </ButtonDiv>
         <Params>

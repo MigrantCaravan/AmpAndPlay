@@ -21,8 +21,6 @@
   cursor: pointer;
 }
 
-/* @import url("client/src/components/LOOPY_IT.TTF"); */
-
 @font-face {
   font-family: "digital-clock-font";
   src: url("./LOOPY_IT.TTF");
@@ -37,7 +35,6 @@
 
 .column {
   display: flex;
-  /* flex-direction: column; */
   flex-basis: 100%;
   flex: 1;
 }

@@ -31,8 +31,6 @@ const Button = styled.div`
   outline: none;
   background-color: #efefef;
   border-radius: 4px;
-  /* box-shadow: -6px -8px 10px #2a2a28, -6px -8px 10px #2a2a28,
-    -20px 0px 25px #2a2a28, 6px 20px 25px rgba(0, 0, 0, 0.2); */
   transition: 0.16s ease-in-out;
   cursor: pointer;
   &:active {

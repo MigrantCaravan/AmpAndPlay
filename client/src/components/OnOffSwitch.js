@@ -9,7 +9,7 @@ export default function OnOffSwitch({ handleMic }) {
         <label className="rocker rocker-small">
           <input
             onChange={() => {
-              console.log("start");
+              // console.log("start");
             }}
             onClick={handleMic}
             type="checkbox"

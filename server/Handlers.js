@@ -57,7 +57,7 @@ const getPreset = async (req, res) => {
 
     await db.collection("presets").findOne({ id }, (err, result) => {
       if (result) {
-        res.status(201).json({ status: 200, id, data: result });
+        res.status(200).json({ status: 200, id, data: result });
       } else {
         res.status(400).json({ status: 400, id, data: "preset not found" });
       }
@@ -110,10 +110,10 @@ const deletePreset = async (req, res) => {
 
     if (result.deletedCount === 1) {
       res
-        .status(201)
-        .json({ status: 201, data: id, message: "preset deleted" });
+        .status(200)
+        .json({ status: 200, data: id, message: "preset deleted" });
     } else {
-      res.status(400).json({ status: 404, id, message: "preset not found" });
+      res.status(400).json({ status: 400, id, message: "preset not found" });
     }
   } catch (err) {
     res.status(500).json({ status: 500, data: id, message: err.message });
